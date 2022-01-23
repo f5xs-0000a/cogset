@@ -31,16 +31,16 @@ use point::Euclidean;
 
 pub struct Kmeans<T> {
     assignments: Vec<usize>,
-    centres: Vec<Euclid<T>>,
+    centres: Vec<T>,
     iterations: usize,
     converged: bool,
 }
 
 impl<T> Kmeans<T>
-    where Euclid<T>: Point + Euclidean + Clone
+    where T: Point + Euclidean + Clone
 {
     /// Run k-means on `data` with the default settings.
-    pub fn new(data: &[Euclid<T>], k: usize) -> Kmeans<T> {
+    pub fn new(data: &[T], k: usize) -> Kmeans<T> {
         KmeansBuilder::new().kmeans(data, k)
     }
 
@@ -49,7 +49,7 @@ impl<T> Kmeans<T>
     ///
     /// The clusters are represented by vectors of indexes into the
     /// original data.
-    pub fn clusters(&self) -> Vec<(Euclid<T>, Vec<usize>)> {
+    pub fn clusters(&self) -> Vec<(T, Vec<usize>)> {
         let mut ret = self.centres.iter().cloned().map(|c| (c, vec![])).collect::<Vec<_>>();
 
         for (idx, &assign) in self.assignments.iter().enumerate() {
@@ -131,8 +131,8 @@ impl KmeansBuilder {
     ///
     /// This is functionally identical to `Kmeans::new`, other than
     /// the internal parameters differing.
-    pub fn kmeans<T>(self, data: &[Euclid<T>], k: usize) -> Kmeans<T>
-        where Euclid<T>: Point + Euclidean + Clone
+    pub fn kmeans<T>(self, data: &[T], k: usize) -> Kmeans<T>
+        where T: Point + Euclidean + Clone
     {
         assert!(2 <= k && k < data.len());
 
@@ -171,10 +171,10 @@ impl KmeansBuilder {
 }
 
 
-fn update_assignments<T>(data: &[Euclid<T>],
+fn update_assignments<T>(data: &[T],
                          assignments: &mut [usize], counts: &mut [usize], costs: &mut [f64],
-                         centres: &[Euclid<T>])
-    where Euclid<T>: Point + Euclidean + Clone
+                         centres: &[T])
+    where T: Point + Euclidean + Clone
 {
     use std::f64::INFINITY as INF;
 
@@ -199,12 +199,12 @@ fn update_assignments<T>(data: &[Euclid<T>],
     }
 }
 
-fn update_centres<T>(data: &[Euclid<T>],
+fn update_centres<T>(data: &[T],
                      assignments: &[usize], counts: &[usize],
-                     centres: &mut [Euclid<T>])
-    where Euclid<T>: Point + Euclidean + Clone
+                     centres: &mut [T])
+    where T: Point + Euclidean + Clone
 {
-    for place in centres.iter_mut() { *place = <Euclid<T>>::zero() }
+    for place in centres.iter_mut() { *place = <T>::zero() }
 
     for (point, assign) in data.iter().zip(assignments.iter()) {
         centres[*assign].add(point)

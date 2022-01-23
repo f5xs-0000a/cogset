@@ -230,7 +230,7 @@ impl<'a,P: Point> Iterator for BruteScanNeighbours<'a, P> {
 }
 
 /// Points in ℝ<sup><i>n</i></sup> with the <i>L</i><sup>2</sup> norm.
-#[derive(Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Debug)]
+#[derive(Clone, PartialEq, PartialOrd, Debug)]
 pub struct Euclid<T>(pub T);
 
 pub trait Euclidean {
